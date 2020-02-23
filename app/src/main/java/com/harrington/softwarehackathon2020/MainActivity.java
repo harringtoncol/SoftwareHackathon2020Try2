@@ -11,9 +11,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -51,9 +52,15 @@ public class MainActivity extends AppCompatActivity {
       //  Log.d("Path","path: " + Environment.getExternalStorageDirectory().getAbsolutePath() );
         final ImageButton recordButton = findViewById(R.id.buttonMic);
         final ImageButton playButton = findViewById((R.id.butn4));
+        final Button stooopButton = findViewById((R.id.btn5));
         boolean b = false;
 
         playButton.setVisibility(View.INVISIBLE);
+        stooopButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Recording = false;
+            }
+            });
 
         recordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -83,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                if (file.exists()) {
+                if (file != null) {
                     playRecord();
                 }
 
@@ -136,11 +143,16 @@ try {
     }
 
     private void startRecord() {
-        File myFile = new File("/Internal storage/findthisapp", "test.pcm");
+
+File path =getApplicationContext().getExternalFilesDir(null);
+        file = new File(path, "test.pcm");
+
+        Log.v("Test", ""+path);
+
 
         try {
-            myFile.createNewFile();
-            OutputStream outputStream = new FileOutputStream(myFile);
+            file.createNewFile();
+            OutputStream outputStream = new FileOutputStream(file);
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
 
             DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
@@ -161,15 +173,15 @@ try {
                 }
             }
 
-            if (Recording) {
+
                 audioRecord.stop();
-                Toast.makeText(getBaseContext(), "YEs yes yes?",
-                        Toast.LENGTH_LONG).show();
+
                 dataOutputStream.close();
-            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
 
     }
